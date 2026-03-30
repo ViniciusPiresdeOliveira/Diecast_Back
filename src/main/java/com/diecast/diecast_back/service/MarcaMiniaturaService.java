@@ -4,38 +4,38 @@ import org.springframework.stereotype.Service;
 
 import com.diecast.diecast_back.exception.DatabaseException;
 import com.diecast.diecast_back.exception.ResourceNotFoundException;
-import com.diecast.diecast_back.model.TipoMiniatura;
-import com.diecast.diecast_back.repository.TipoMiniaturaRepository;
+import com.diecast.diecast_back.model.MarcaMiniatura;
+import com.diecast.diecast_back.repository.MarcaMiniaturaRepository;
 
 import java.util.List;
 
 @Service
-public class TipoMiniaturaService {
+public class MarcaMiniaturaService {
 
-	private final TipoMiniaturaRepository repository;
+	private final MarcaMiniaturaRepository repository;
 
-	public TipoMiniaturaService(TipoMiniaturaRepository repository) {
+	public MarcaMiniaturaService(MarcaMiniaturaRepository repository) {
 		this.repository = repository;
 	}
 
-	public TipoMiniatura criar(TipoMiniatura tipo) {
+	public MarcaMiniatura criar(MarcaMiniatura tipo) {
 		if (repository.existsByNome(tipo.getNome())) {
 			throw new DatabaseException("O nome '" + tipo.getNome() + "' já está cadastrado.");
 		}
 		return repository.save(tipo);
 	}
 
-	public List<TipoMiniatura> listar() {
+	public List<MarcaMiniatura> listar() {
 		return repository.findAll();
 	}
 
-	public TipoMiniatura buscarPorId(Short id) {
+	public MarcaMiniatura buscarPorId(Short id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
-				"Não é possível encontrar: Tipo de miniatura com ID " + id + " não encontrado."));
+				"Não é possível encontrar: Marca de miniatura com ID " + id + " não encontrada."));
 	}
 
-	public TipoMiniatura atualizar(Short id, TipoMiniatura novo) {
-		TipoMiniatura existente = buscarPorId(id);
+	public MarcaMiniatura atualizar(Short id, MarcaMiniatura novo) {
+		MarcaMiniatura existente = buscarPorId(id);
 		existente.setNome(novo.getNome());
 		return repository.save(existente);
 	}
@@ -43,7 +43,7 @@ public class TipoMiniaturaService {
 	public void deletar(Short id) {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException(
-					"Não é possível deletar: Tipo de miniatura com ID " + id + " não encontrado.");
+					"Não é possível deletar: Marca de miniatura com ID " + id + " não encontrado.");
 		}
 		repository.deleteById(id);
 	}
