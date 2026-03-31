@@ -19,8 +19,8 @@ public class MarcaMiniaturaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MarcaMiniatura create(@RequestBody MarcaMiniatura tipo) {
-        return service.criar(tipo);
+    public MarcaMiniatura create(@RequestBody MarcaMiniatura marca) {
+        return service.criar(marca);
     }
 
     @GetMapping
@@ -34,8 +34,8 @@ public class MarcaMiniaturaController {
     }
 
     @PutMapping("/{id}")
-    public MarcaMiniatura update(@PathVariable Short id, @RequestBody MarcaMiniatura tipo) {
-        return service.atualizar(id, tipo);
+    public MarcaMiniatura update(@PathVariable Short id, @RequestBody MarcaMiniatura marca) {
+        return service.atualizar(id, marca);
     }
 
     @DeleteMapping("/{id}")
