@@ -13,37 +13,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.diecast.diecast_back.model.LinhaMiniatura;
-import com.diecast.diecast_back.service.LinhaMiniaturaService;
+import com.diecast.diecast_back.model.EscalaMiniatura;
+import com.diecast.diecast_back.service.EscalaMiniaturaService;
 
 @RestController
-@RequestMapping("/linhas-miniatura")
-public class LinhaMiniaturaController {
-	private final LinhaMiniaturaService service;
+@RequestMapping("/escalas-miniatura")
+public class EscalaMiniaturaController {
+	private final EscalaMiniaturaService service;
 
-	public LinhaMiniaturaController(LinhaMiniaturaService service) {
+	public EscalaMiniaturaController(EscalaMiniaturaService service) {
 		this.service = service;
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public LinhaMiniatura create(@RequestBody LinhaMiniatura linha) {
+	public EscalaMiniatura create(@RequestBody EscalaMiniatura linha) {
 		return service.criar(linha);
 	}
 
 	@GetMapping
-	public List<LinhaMiniatura> findAll() {
+	public List<EscalaMiniatura> findAll() {
 		return service.listar();
 	}
 
 	@GetMapping("/{id}")
-	public LinhaMiniatura findById(@PathVariable Short id) {
+	public EscalaMiniatura findById(@PathVariable Short id) {
 		return service.buscarPorId(id);
 	}
 
 	@PutMapping("/{id}")
-	public LinhaMiniatura update(@PathVariable Short id, @RequestBody LinhaMiniatura linha) {
-		return service.atualizar(id, linha);
+	public EscalaMiniatura update(@PathVariable Short id, @RequestBody EscalaMiniatura escala) {
+		return service.atualizar(id, escala);
 	}
 
 	@DeleteMapping("/{id}")

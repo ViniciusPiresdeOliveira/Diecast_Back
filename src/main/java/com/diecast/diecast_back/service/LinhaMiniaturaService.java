@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 import com.diecast.diecast_back.exception.DatabaseException;
 import com.diecast.diecast_back.exception.ResourceNotFoundException;
 import com.diecast.diecast_back.model.LinhaMiniatura;
-import com.diecast.diecast_back.model.MarcaMiniatura;
 import com.diecast.diecast_back.repository.LinhaMiniaturaRepository;
-import com.diecast.diecast_back.repository.MarcaMiniaturaRepository;
 
 @Service
 public class LinhaMiniaturaService {
