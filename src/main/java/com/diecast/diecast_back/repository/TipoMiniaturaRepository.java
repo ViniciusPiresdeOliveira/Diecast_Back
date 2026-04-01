@@ -6,7 +6,7 @@ import com.diecast.diecast_back.model.TipoMiniatura;
 
 import java.util.Optional;
 
-public interface TipoMiniaturaRepository extends JpaRepository<TipoMiniatura, Short> {
+public interface TipoMiniaturaRepository extends JpaRepository<TipoMiniatura, Long> {
 
     Optional<TipoMiniatura> findByNome(String nome);
 

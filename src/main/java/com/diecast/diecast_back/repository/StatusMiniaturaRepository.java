@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.diecast.diecast_back.model.StatusMiniatura;
 
-public interface StatusMiniaturaRepository extends JpaRepository<StatusMiniatura, Short> {
+public interface StatusMiniaturaRepository extends JpaRepository<StatusMiniatura, Long> {
 
 	Optional<StatusMiniatura> findByNome(String nome);
 

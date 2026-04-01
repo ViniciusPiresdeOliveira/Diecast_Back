@@ -6,7 +6,7 @@ import com.diecast.diecast_back.model.MarcaMiniatura;
 
 import java.util.Optional;
 
-public interface MarcaMiniaturaRepository extends JpaRepository<MarcaMiniatura, Short> {
+public interface MarcaMiniaturaRepository extends JpaRepository<MarcaMiniatura, Long> {
 
 	Optional<MarcaMiniatura> findByNome(String nome);
 

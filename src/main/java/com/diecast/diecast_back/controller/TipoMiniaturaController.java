@@ -29,18 +29,18 @@ public class TipoMiniaturaController {
     }
 
     @GetMapping("/{id}")
-    public TipoMiniatura findById(@PathVariable Short id) {
+    public TipoMiniatura findById(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
     @PutMapping("/{id}")
-    public TipoMiniatura update(@PathVariable Short id, @RequestBody TipoMiniatura tipo) {
+    public TipoMiniatura update(@PathVariable Long id, @RequestBody TipoMiniatura tipo) {
         return service.atualizar(id, tipo);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Short id) {
+    public void deleteById(@PathVariable Long id) {
         service.deletar(id);
     }
 }

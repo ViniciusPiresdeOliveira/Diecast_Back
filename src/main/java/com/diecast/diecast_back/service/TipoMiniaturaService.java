@@ -29,18 +29,18 @@ public class TipoMiniaturaService {
 		return repository.findAll();
 	}
 
-	public TipoMiniatura buscarPorId(Short id) {
+	public TipoMiniatura buscarPorId(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
 				"Não é possível encontrar: Tipo de miniatura com ID " + id + " não encontrado."));
 	}
 
-	public TipoMiniatura atualizar(Short id, TipoMiniatura novo) {
+	public TipoMiniatura atualizar(Long id, TipoMiniatura novo) {
 		TipoMiniatura existente = buscarPorId(id);
 		existente.setNome(novo.getNome());
 		return repository.save(existente);
 	}
 
-	public void deletar(Short id) {
+	public void deletar(Long id) {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException(
 					"Não é possível deletar: Tipo de miniatura com ID " + id + " não encontrado.");
