@@ -28,18 +28,18 @@ public class EscalaMiniaturaService {
 		return repository.findAll();
 	}
 
-	public EscalaMiniatura buscarPorId(Short id) {
+	public EscalaMiniatura buscarPorId(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
 				"Não é possível encontrar: Escala de miniatura com ID " + id + " não encontrada."));
 	}
 
-	public EscalaMiniatura atualizar(Short id, EscalaMiniatura novo) {
+	public EscalaMiniatura atualizar(Long id, EscalaMiniatura novo) {
 		EscalaMiniatura existente = buscarPorId(id);
 		existente.setNome(novo.getNome());
 		return repository.save(existente);
 	}
 
-	public void deletar(Short id) {
+	public void deletar(Long id) {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException(
 					"Não é possível deletar: Escala de miniatura com ID " + id + " não encontrada.");

@@ -29,18 +29,18 @@ public class StatusMiniaturaService {
 		return repository.findAll();
 	}
 
-	public StatusMiniatura buscarPorId(Short id) {
+	public StatusMiniatura buscarPorId(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
 				"Não é possível encontrar: Status de miniatura com ID " + id + " não encontrado."));
 	}
 
-	public StatusMiniatura atualizar(Short id, StatusMiniatura novo) {
+	public StatusMiniatura atualizar(Long id, StatusMiniatura novo) {
 		StatusMiniatura existente = buscarPorId(id);
 		existente.setNome(novo.getNome());
 		return repository.save(existente);
 	}
 
-	public void deletar(Short id) {
+	public void deletar(Long id) {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException(
 					"Não é possível deletar: Status de miniatura com ID " + id + " não encontrado.");

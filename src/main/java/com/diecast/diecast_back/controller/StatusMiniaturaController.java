@@ -37,18 +37,18 @@ public class StatusMiniaturaController {
 	}
 
 	@GetMapping("/{id}")
-	public StatusMiniatura findById(@PathVariable Short id) {
+	public StatusMiniatura findById(@PathVariable Long id) {
 		return service.buscarPorId(id);
 	}
 
 	@PutMapping("/{id}")
-	public StatusMiniatura update(@PathVariable Short id, @RequestBody StatusMiniatura status) {
+	public StatusMiniatura update(@PathVariable Long id, @RequestBody StatusMiniatura status) {
 		return service.atualizar(id, status);
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteById(@PathVariable Short id) {
+	public void deleteById(@PathVariable Long id) {
 		service.deletar(id);
 	}
 }

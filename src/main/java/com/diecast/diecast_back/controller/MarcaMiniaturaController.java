@@ -29,18 +29,18 @@ public class MarcaMiniaturaController {
     }
 
     @GetMapping("/{id}")
-    public MarcaMiniatura findById(@PathVariable Short id) {
+    public MarcaMiniatura findById(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
     @PutMapping("/{id}")
-    public MarcaMiniatura update(@PathVariable Short id, @RequestBody MarcaMiniatura marca) {
+    public MarcaMiniatura update(@PathVariable Long id, @RequestBody MarcaMiniatura marca) {
         return service.atualizar(id, marca);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Short id) {
+    public void deleteById(@PathVariable Long id) {
         service.deletar(id);
     }
 }

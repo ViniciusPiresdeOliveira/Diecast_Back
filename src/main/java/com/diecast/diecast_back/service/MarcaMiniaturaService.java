@@ -29,18 +29,18 @@ public class MarcaMiniaturaService {
 		return repository.findAll();
 	}
 
-	public MarcaMiniatura buscarPorId(Short id) {
+	public MarcaMiniatura buscarPorId(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
 				"Não é possível encontrar: Marca de miniatura com ID " + id + " não encontrada."));
 	}
 
-	public MarcaMiniatura atualizar(Short id, MarcaMiniatura novo) {
+	public MarcaMiniatura atualizar(Long id, MarcaMiniatura novo) {
 		MarcaMiniatura existente = buscarPorId(id);
 		existente.setNome(novo.getNome());
 		return repository.save(existente);
 	}
 
-	public void deletar(Short id) {
+	public void deletar(Long id) {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException(
 					"Não é possível deletar: Marca de miniatura com ID " + id + " não encontrado.");

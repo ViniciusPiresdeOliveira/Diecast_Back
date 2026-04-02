@@ -37,18 +37,18 @@ public class EscalaMiniaturaController {
 	}
 
 	@GetMapping("/{id}")
-	public EscalaMiniatura findById(@PathVariable Short id) {
+	public EscalaMiniatura findById(@PathVariable Long id) {
 		return service.buscarPorId(id);
 	}
 
 	@PutMapping("/{id}")
-	public EscalaMiniatura update(@PathVariable Short id, @RequestBody EscalaMiniatura escala) {
+	public EscalaMiniatura update(@PathVariable Long id, @RequestBody EscalaMiniatura escala) {
 		return service.atualizar(id, escala);
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteById(@PathVariable Short id) {
+	public void deleteById(@PathVariable Long id) {
 		service.deletar(id);
 	}
 }
