@@ -1,11 +1,14 @@
 package com.diecast.diecast_back.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.diecast.diecast_back.dto.MiniaturaDTO;
 import com.diecast.diecast_back.model.Miniatura;
@@ -28,11 +31,23 @@ public class MiniaturaController {
 		return service.findById(id);
 	}
 
-	@PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-	public Miniatura insert(@RequestBody MiniaturaDTO dto) {
-	    Miniatura entity = service.fromDTO(dto);
-	    return entity = service.insert(entity);
+//	@PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//	public Miniatura insert(@RequestBody MiniaturaDTO dto) {
+//	    Miniatura entity = service.fromDTO(dto);
+//	    return entity = service.insert(entity);
+//	}
+
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@ResponseStatus(HttpStatus.CREATED)
+	public Miniatura insert(@RequestPart("miniatura") MiniaturaDTO dto, @RequestPart("imagem") MultipartFile imagem)
+			throws IOException {
+
+		Miniatura entity = service.fromDTO(dto);
+
+		entity.setImagem(imagem.getBytes());
+
+		return service.insert(entity);
 	}
 
 	@PutMapping("/{id}")
@@ -42,7 +57,7 @@ public class MiniaturaController {
 	}
 
 	@DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteById(@PathVariable Long id) {
 		service.delete(id);
 	}

@@ -81,11 +81,11 @@ public class MiniaturaService {
         }
 
         // 🔥 Imagem
-        if (dto.getImagem() != null) {
-            entity.setImagem(
-                java.util.Base64.getDecoder().decode(dto.getImagem())
-            );
-        }
+//        if (dto.getImagem() != null) {
+//            entity.setImagem(
+//                java.util.Base64.getDecoder().decode(dto.getImagem())
+//            );
+//        }
 
         return entity;
     }

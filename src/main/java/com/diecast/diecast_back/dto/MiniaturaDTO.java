@@ -1,6 +1,8 @@
 package com.diecast.diecast_back.dto;
 import java.util.List;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +21,5 @@ public class MiniaturaDTO {
 
     private Short ano;
 
-    private String imagem;
+	private byte[] imagem;
 }
