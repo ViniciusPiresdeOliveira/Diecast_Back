@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.diecast.diecast_back.dto.MiniaturaDTO;
+import com.diecast.diecast_back.dto.MiniaturaFilterDTO;
 import com.diecast.diecast_back.model.Miniatura;
 import com.diecast.diecast_back.service.MiniaturaService;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/miniaturas")
@@ -20,23 +23,25 @@ public class MiniaturaController {
 	@Autowired
 	private MiniaturaService service;
 
-	@GetMapping
-	public ResponseEntity<List<Miniatura>> findAll() {
-		List<Miniatura> list = service.findAll();
-		return ResponseEntity.ok(list);
+	@PostMapping("/filtro")
+	public ResponseEntity<Page<Miniatura>> filtrar(@RequestBody MiniaturaFilterDTO filtro) {
+
+	    PageRequest pageable = PageRequest.of(filtro.getPage(), filtro.getSize());
+
+	    Page<Miniatura> result = service.findAllWithFilters(
+	            filtro.getNome(),
+	            filtro.getMarcaId(),
+	            filtro.getAno(),
+	            pageable
+	    );
+
+	    return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/{id}")
 	public Miniatura findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
-
-//	@PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//	public Miniatura insert(@RequestBody MiniaturaDTO dto) {
-//	    Miniatura entity = service.fromDTO(dto);
-//	    return entity = service.insert(entity);
-//	}
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)

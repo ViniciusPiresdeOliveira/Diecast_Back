@@ -31,7 +31,11 @@ import com.diecast.diecast_back.repository.MarcaMiniaturaRepository;
 import com.diecast.diecast_back.repository.MiniaturaRepository;
 import com.diecast.diecast_back.repository.StatusMiniaturaRepository;
 import com.diecast.diecast_back.repository.TipoMiniaturaRepository;
+import com.diecast.diecast_back.specification.MiniaturaSpecification;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -57,6 +61,17 @@ public class MiniaturaService {
 	public Miniatura findById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
 				"Não é possível encontrar: Miniatura com ID " + id + " não encontrada."));
+	}
+	
+	public Page<Miniatura> findAllWithFilters(String nome, Long marcaId, Integer ano, Pageable pageable) {
+
+	    Specification<Miniatura> spec = Specification.where(null);
+
+	    spec = spec.and(MiniaturaSpecification.nomeContains(nome));
+	    spec = spec.and(MiniaturaSpecification.marcaIdEquals(marcaId));
+	    spec = spec.and(MiniaturaSpecification.anoEquals(ano));
+
+	    return repository.findAll(spec, pageable);
 	}
 
 	public byte[] comprimirImagem(MultipartFile file) throws IOException {
