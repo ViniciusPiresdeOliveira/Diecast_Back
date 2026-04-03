@@ -45,8 +45,7 @@ public class MiniaturaController {
 
 		Miniatura entity = service.fromDTO(dto);
 
-		entity.setImagem(imagem.getBytes());
-
+		entity.setImagem(service.comprimirImagem(imagem));
 		return service.insert(entity);
 	}
 
