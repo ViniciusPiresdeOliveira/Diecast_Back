@@ -1,5 +1,6 @@
 package com.diecast.diecast_back.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -54,9 +55,12 @@ public class Miniatura {
 	@Column(name = "imagem")
 	private byte[] imagem;
 
-	private Short ano;
+	private Long ano;
 
 	@ManyToOne
 	@JoinColumn(name = "escala_id")
 	private EscalaMiniatura escala;
+	
+	@Column(name = "valor")
+	private BigDecimal valor;
 }

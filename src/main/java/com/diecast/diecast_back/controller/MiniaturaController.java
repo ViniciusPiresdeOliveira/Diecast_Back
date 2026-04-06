@@ -28,12 +28,7 @@ public class MiniaturaController {
 
 	    PageRequest pageable = PageRequest.of(filtro.getPage(), filtro.getSize());
 
-	    Page<Miniatura> result = service.findAllWithFilters(
-	            filtro.getNome(),
-	            filtro.getMarcaId(),
-	            filtro.getAno(),
-	            pageable
-	    );
+	    Page<Miniatura> result = service.findAllWithFilters(filtro, pageable);
 
 	    return ResponseEntity.ok(result);
 	}

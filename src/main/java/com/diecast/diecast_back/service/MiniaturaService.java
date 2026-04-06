@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.diecast.diecast_back.dto.MiniaturaDTO;
+import com.diecast.diecast_back.dto.MiniaturaFilterDTO;
 import com.diecast.diecast_back.exception.ResourceNotFoundException;
 import com.diecast.diecast_back.model.EscalaMiniatura;
 import com.diecast.diecast_back.model.MarcaMiniatura;
@@ -63,17 +64,22 @@ public class MiniaturaService {
 				"Não é possível encontrar: Miniatura com ID " + id + " não encontrada."));
 	}
 	
-	public Page<Miniatura> findAllWithFilters(String nome, Long marcaId, Integer ano, Pageable pageable) {
+	public Page<Miniatura> findAllWithFilters(MiniaturaFilterDTO filtro, Pageable pageable) {
 
 	    Specification<Miniatura> spec = Specification.where(null);
 
-	    spec = spec.and(MiniaturaSpecification.nomeContains(nome));
-	    spec = spec.and(MiniaturaSpecification.marcaIdEquals(marcaId));
-	    spec = spec.and(MiniaturaSpecification.anoEquals(ano));
+	    spec = spec.and(MiniaturaSpecification.nomeContains(filtro.getNome()));
+	    spec = spec.and(MiniaturaSpecification.marcaIdEquals(filtro.getMarcaId()));
+	    spec = spec.and(MiniaturaSpecification.anoEquals(filtro.getAno()));
+	    spec = spec.and(MiniaturaSpecification.tipoIdEquals(filtro.getTipoId()));
+	    spec = spec.and(MiniaturaSpecification.linhaIdEquals(filtro.getLinhaId()));
+	    spec = spec.and(MiniaturaSpecification.statusEquals(filtro.getStatus()));
+	    spec = spec.and(MiniaturaSpecification.escalaEquals(filtro.getEscala()));
+	    spec = spec.and(MiniaturaSpecification.precoGreaterThanOrEqual(filtro.getPrecoMin()));
+	    spec = spec.and(MiniaturaSpecification.precoLessThanOrEqual(filtro.getPrecoMax()));
 
 	    return repository.findAll(spec, pageable);
 	}
-
 	public byte[] comprimirImagem(MultipartFile file) throws IOException {
 		BufferedImage imagem = ImageIO.read(file.getInputStream());
 
@@ -115,6 +121,7 @@ public class MiniaturaService {
 
 		entity.setNome(dto.getNome());
 		entity.setAno(dto.getAno());
+		entity.setValor(dto.getValor());
 
 		// 🔥 Marca
 		entity.setMarca(marcaRepository.findById(dto.getMarcaId())
@@ -148,9 +155,7 @@ public class MiniaturaService {
 	}
 
 	public Miniatura insert(Miniatura obj) {
-
 		return repository.save(obj);
-
 	}
 
 	public Miniatura update(Long id, Miniatura obj) {
@@ -167,7 +172,8 @@ public class MiniaturaService {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException("Miniatura não encontrada");
 		}
-		repository.deleteAll();
+		repository.deleteById(id);
+//		repository.deleteAll();
 	}
 
 	private void updateData(Miniatura entity, Miniatura obj) {

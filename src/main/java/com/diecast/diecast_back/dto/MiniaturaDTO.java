@@ -1,4 +1,5 @@
 package com.diecast.diecast_back.dto;
+import java.math.BigDecimal;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -19,7 +20,9 @@ public class MiniaturaDTO {
 
     private Long escalaId;
 
-    private Short ano;
+    private Long ano;
+    
+    private BigDecimal valor;
 
 	private byte[] imagem;
 }
