@@ -29,18 +29,18 @@ public class LinhaMiniaturaService {
 		return repository.findAll();
 	}
 
-	public LinhaMiniatura buscarPorId(Short id) {
+	public LinhaMiniatura buscarPorId(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
 				"Não é possível encontrar: Linha de miniatura com ID " + id + " não encontrada."));
 	}
 
-	public LinhaMiniatura atualizar(Short id, LinhaMiniatura novo) {
+	public LinhaMiniatura atualizar(Long id, LinhaMiniatura novo) {
 		LinhaMiniatura existente = buscarPorId(id);
 		existente.setNome(novo.getNome());
 		return repository.save(existente);
 	}
 
-	public void deletar(Short id) {
+	public void deletar(Long id) {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException(
 					"Não é possível deletar: Linha de miniatura com ID " + id + " não encontrado.");

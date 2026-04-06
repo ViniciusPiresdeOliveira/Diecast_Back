@@ -37,18 +37,18 @@ public class LinhaMiniaturaController {
 	}
 
 	@GetMapping("/{id}")
-	public LinhaMiniatura findById(@PathVariable Short id) {
+	public LinhaMiniatura findById(@PathVariable Long id) {
 		return service.buscarPorId(id);
 	}
 
 	@PutMapping("/{id}")
-	public LinhaMiniatura update(@PathVariable Short id, @RequestBody LinhaMiniatura linha) {
+	public LinhaMiniatura update(@PathVariable Long id, @RequestBody LinhaMiniatura linha) {
 		return service.atualizar(id, linha);
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteById(@PathVariable Short id) {
+	public void deleteById(@PathVariable Long id) {
 		service.deletar(id);
 	}
 }

@@ -52,7 +52,7 @@ public class Miniatura {
 	private StatusMiniatura status;
 
 	@Lob
-	@Column(name = "imagem")
+	@Column(name = "imagem", columnDefinition = "BYTEA")
 	private byte[] imagem;
 
 	private Long ano;
@@ -60,6 +60,10 @@ public class Miniatura {
 	@ManyToOne
 	@JoinColumn(name = "escala_id")
 	private EscalaMiniatura escala;
+
+	@ManyToOne
+	@JoinColumn(name = "linha_id")
+	private LinhaMiniatura linha;
 	
 	@Column(name = "valor")
 	private BigDecimal valor;

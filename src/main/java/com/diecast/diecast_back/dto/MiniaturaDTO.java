@@ -19,6 +19,8 @@ public class MiniaturaDTO {
     private Long statusId;
 
     private Long escalaId;
+    
+    private Long linhaId;
 
     private Long ano;
     

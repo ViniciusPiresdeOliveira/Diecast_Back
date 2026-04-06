@@ -28,6 +28,7 @@ import com.diecast.diecast_back.model.Miniatura;
 import com.diecast.diecast_back.model.StatusMiniatura;
 import com.diecast.diecast_back.model.TipoMiniatura;
 import com.diecast.diecast_back.repository.EscalaMiniaturaRepository;
+import com.diecast.diecast_back.repository.LinhaMiniaturaRepository;
 import com.diecast.diecast_back.repository.MarcaMiniaturaRepository;
 import com.diecast.diecast_back.repository.MiniaturaRepository;
 import com.diecast.diecast_back.repository.StatusMiniaturaRepository;
@@ -43,8 +44,12 @@ import jakarta.persistence.EntityNotFoundException;
 public class MiniaturaService {
 	@Autowired
 	private MiniaturaRepository repository;
+	
 	@Autowired
 	private MarcaMiniaturaRepository marcaRepository;
+	
+	@Autowired
+	private LinhaMiniaturaRepository linhaRepository;
 
 	@Autowired
 	private TipoMiniaturaRepository tipoRepository;
@@ -132,6 +137,12 @@ public class MiniaturaService {
 			entity.setStatus(statusRepository.findById(dto.getStatusId())
 					.orElseThrow(() -> new RuntimeException("Status não encontrado")));
 		}
+		
+		// 🔥 Status
+		if (dto.getLinhaId() != null) {
+			entity.setLinha(linhaRepository.findById(dto.getLinhaId())
+					.orElseThrow(() -> new RuntimeException("Linha não encontrada")));
+		}
 
 		// 🔥 Escala
 		if (dto.getEscalaId() != null) {
@@ -184,5 +195,6 @@ public class MiniaturaService {
 		entity.setImagem(obj.getImagem());
 		entity.setAno(obj.getAno());
 		entity.setEscala(obj.getEscala());
+		entity.setLinha(obj.getLinha());
 	}
 }
