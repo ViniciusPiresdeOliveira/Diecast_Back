@@ -75,6 +75,80 @@ public class MiniaturaService {
 				"Não é possível encontrar: Miniatura com ID " + id + " não encontrada."));
 	}
 	
+	public List<Miniatura> findSimilarMinis(Long id, int limit) {
+
+	    Miniatura base = findById(id);
+
+	    // 🔥 1. Busca principais (mais relevantes)
+	    Specification<Miniatura> spec = Specification.where(null);
+
+	    if (base.getMarca() != null) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.equal(root.get("marca"), base.getMarca()));
+	    }
+
+	    if (base.getTipos() != null && !base.getTipos().isEmpty()) {
+	        spec = spec.and((root, query, cb) -> {
+	            query.distinct(true);
+	            return root.join("tipos").in(base.getTipos());
+	        });
+	    }
+
+	    if (base.getEscala() != null) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.equal(root.get("escala"), base.getEscala()));
+	    }
+
+	    // ❌ não trazer a própria mini
+	    spec = spec.and((root, query, cb) ->
+	        cb.notEqual(root.get("id"), id));
+
+	    PageRequest pageable = PageRequest.of(
+	        0,
+	        limit,
+	        Sort.by(Sort.Direction.DESC, "dataCadastro")
+	    );
+
+	    // ✅ tornar lista mutável
+	    List<Miniatura> result = new ArrayList<>(
+	        repository.findAll(spec, pageable).getContent()
+	    );
+
+	    // 🔥 2. Fallback se não atingiu o limite
+	    if (result.size() < limit) {
+
+	        int restante = limit - result.size();
+
+	        // IDs já usados
+	        List<Long> ids = result.stream()
+	                .map(Miniatura::getId)
+	                .toList();
+
+	        // ✅ lista mutável separada
+	        List<Long> idsToExclude = new ArrayList<>(ids);
+	        idsToExclude.add(id);
+
+	        Specification<Miniatura> fallbackSpec = (root, query, cb) -> {
+	            query.distinct(true);
+	            return cb.not(root.get("id").in(idsToExclude));
+	        };
+
+	        PageRequest fallbackPage = PageRequest.of(
+	            0,
+	            restante,
+	            Sort.by(Sort.Direction.DESC, "dataCadastro")
+	        );
+
+	        List<Miniatura> fallback = repository
+	                .findAll(fallbackSpec, fallbackPage)
+	                .getContent();
+
+	        result.addAll(fallback);
+	    }
+
+	    return result;
+	}
+	
 	public Page<Miniatura> findAllWithFilters(MiniaturaFilterDTO filtro, Pageable pageable) {
 
 	    Specification<Miniatura> spec = Specification.where(null);

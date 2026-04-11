@@ -37,6 +37,16 @@ public class MiniaturaController {
 	public Miniatura findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
+	
+	@GetMapping("/similares/{id}")
+	public ResponseEntity<List<Miniatura>> getSimilares(
+	        @PathVariable Long id,
+	        @RequestParam(defaultValue = "5") int limit) {
+
+	    List<Miniatura> similares = service.findSimilarMinis(id, limit);
+
+	    return ResponseEntity.ok(similares);
+	}
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
