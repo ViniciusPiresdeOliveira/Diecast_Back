@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,9 @@ import com.diecast.diecast_back.repository.TipoMiniaturaRepository;
 import com.diecast.diecast_back.specification.MiniaturaSpecification;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -59,6 +62,9 @@ public class MiniaturaService {
 
 	@Autowired
 	private EscalaMiniaturaRepository escalaRepository;
+	
+	private final DateTimeFormatter formatter =
+	        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
 	public List<Miniatura> findAll() {
 		return repository.findAll();
@@ -83,8 +89,15 @@ public class MiniaturaService {
 	    spec = spec.and(MiniaturaSpecification.precoGreaterThanOrEqual(filtro.getPrecoMin()));
 	    spec = spec.and(MiniaturaSpecification.precoLessThanOrEqual(filtro.getPrecoMax()));
 
-	    return repository.findAll(spec, pageable);
+	    Pageable sortedPageable = PageRequest.of(
+	            pageable.getPageNumber(),
+	            pageable.getPageSize(),
+	            Sort.by(Sort.Direction.DESC, "dataCadastro")
+	        );
+	    
+	    return repository.findAll(spec, sortedPageable);
 	}
+	
 	public byte[] comprimirImagem(MultipartFile file) throws IOException {
 		BufferedImage imagem = ImageIO.read(file.getInputStream());
 

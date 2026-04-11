@@ -27,4 +27,8 @@ public class MiniaturaDTO {
     private BigDecimal valor;
 
 	private byte[] imagem;
+	
+    private String dataCadastro;
+    
+    private String dataAtualizacao;
 }

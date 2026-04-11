@@ -1,7 +1,14 @@
 package com.diecast.diecast_back.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,4 +74,14 @@ public class Miniatura {
 	
 	@Column(name = "valor")
 	private BigDecimal valor;
+	
+	@CreationTimestamp
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+	@Column(name = "data_cadastro", updatable = false)
+	private LocalDateTime dataCadastro;
+
+	@UpdateTimestamp
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+	@Column(name = "data_atualizacao")
+	private LocalDateTime dataAtualizacao;
 }
