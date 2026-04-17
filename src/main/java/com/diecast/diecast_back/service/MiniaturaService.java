@@ -47,10 +47,10 @@ import jakarta.persistence.EntityNotFoundException;
 public class MiniaturaService {
 	@Autowired
 	private MiniaturaRepository repository;
-	
+
 	@Autowired
 	private MarcaMiniaturaRepository marcaRepository;
-	
+
 	@Autowired
 	private LinhaMiniaturaRepository linhaRepository;
 
@@ -62,9 +62,8 @@ public class MiniaturaService {
 
 	@Autowired
 	private EscalaMiniaturaRepository escalaRepository;
-	
-	private final DateTimeFormatter formatter =
-	        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
 	public List<Miniatura> findAll() {
 		return repository.findAll();
@@ -74,104 +73,84 @@ public class MiniaturaService {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
 				"Não é possível encontrar: Miniatura com ID " + id + " não encontrada."));
 	}
-	
+
 	public List<Miniatura> findSimilarMinis(Long id, int limit) {
 
-	    Miniatura base = findById(id);
+		Miniatura base = findById(id);
 
-	    // 🔥 1. Busca principais (mais relevantes)
-	    Specification<Miniatura> spec = Specification.where(null);
+		// 🔥 1. Busca principais (mais relevantes)
+		Specification<Miniatura> spec = Specification.where(null);
 
-	    if (base.getMarca() != null) {
-	        spec = spec.and((root, query, cb) ->
-	            cb.equal(root.get("marca"), base.getMarca()));
-	    }
+		if (base.getMarca() != null) {
+			spec = spec.and((root, query, cb) -> cb.equal(root.get("marca"), base.getMarca()));
+		}
 
-	    if (base.getTipos() != null && !base.getTipos().isEmpty()) {
-	        spec = spec.and((root, query, cb) -> {
-	            query.distinct(true);
-	            return root.join("tipos").in(base.getTipos());
-	        });
-	    }
+		if (base.getTipos() != null && !base.getTipos().isEmpty()) {
+			spec = spec.and((root, query, cb) -> {
+				query.distinct(true);
+				return root.join("tipos").in(base.getTipos());
+			});
+		}
 
-	    if (base.getEscala() != null) {
-	        spec = spec.and((root, query, cb) ->
-	            cb.equal(root.get("escala"), base.getEscala()));
-	    }
+		if (base.getEscala() != null) {
+			spec = spec.and((root, query, cb) -> cb.equal(root.get("escala"), base.getEscala()));
+		}
 
-	    // ❌ não trazer a própria mini
-	    spec = spec.and((root, query, cb) ->
-	        cb.notEqual(root.get("id"), id));
+		// ❌ não trazer a própria mini
+		spec = spec.and((root, query, cb) -> cb.notEqual(root.get("id"), id));
 
-	    PageRequest pageable = PageRequest.of(
-	        0,
-	        limit,
-	        Sort.by(Sort.Direction.DESC, "dataCadastro")
-	    );
+		PageRequest pageable = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "dataCadastro"));
 
-	    // ✅ tornar lista mutável
-	    List<Miniatura> result = new ArrayList<>(
-	        repository.findAll(spec, pageable).getContent()
-	    );
+		// ✅ tornar lista mutável
+		List<Miniatura> result = new ArrayList<>(repository.findAll(spec, pageable).getContent());
 
-	    // 🔥 2. Fallback se não atingiu o limite
-	    if (result.size() < limit) {
+		// 🔥 2. Fallback se não atingiu o limite
+		if (result.size() < limit) {
 
-	        int restante = limit - result.size();
+			int restante = limit - result.size();
 
-	        // IDs já usados
-	        List<Long> ids = result.stream()
-	                .map(Miniatura::getId)
-	                .toList();
+			// IDs já usados
+			List<Long> ids = result.stream().map(Miniatura::getId).toList();
 
-	        // ✅ lista mutável separada
-	        List<Long> idsToExclude = new ArrayList<>(ids);
-	        idsToExclude.add(id);
+			// ✅ lista mutável separada
+			List<Long> idsToExclude = new ArrayList<>(ids);
+			idsToExclude.add(id);
 
-	        Specification<Miniatura> fallbackSpec = (root, query, cb) -> {
-	            query.distinct(true);
-	            return cb.not(root.get("id").in(idsToExclude));
-	        };
+			Specification<Miniatura> fallbackSpec = (root, query, cb) -> {
+				query.distinct(true);
+				return cb.not(root.get("id").in(idsToExclude));
+			};
 
-	        PageRequest fallbackPage = PageRequest.of(
-	            0,
-	            restante,
-	            Sort.by(Sort.Direction.DESC, "dataCadastro")
-	        );
+			PageRequest fallbackPage = PageRequest.of(0, restante, Sort.by(Sort.Direction.DESC, "dataCadastro"));
 
-	        List<Miniatura> fallback = repository
-	                .findAll(fallbackSpec, fallbackPage)
-	                .getContent();
+			List<Miniatura> fallback = repository.findAll(fallbackSpec, fallbackPage).getContent();
 
-	        result.addAll(fallback);
-	    }
+			result.addAll(fallback);
+		}
 
-	    return result;
+		return result;
 	}
-	
+
 	public Page<Miniatura> findAllWithFilters(MiniaturaFilterDTO filtro, Pageable pageable) {
 
-	    Specification<Miniatura> spec = Specification.where(null);
+		Specification<Miniatura> spec = Specification.where(null);
 
-	    spec = spec.and(MiniaturaSpecification.nomeContains(filtro.getNome()));
-	    spec = spec.and(MiniaturaSpecification.marcaIdEquals(filtro.getMarcaId()));
-	    spec = spec.and(MiniaturaSpecification.anoEquals(filtro.getAno()));
-	    spec = spec.and(MiniaturaSpecification.tipoIdEquals(filtro.getTipoId()));
-	    spec = spec.and(MiniaturaSpecification.linhaIdEquals(filtro.getLinhaId()));
-	    spec = spec.and(MiniaturaSpecification.statusEquals(filtro.getStatus()));
-	    spec = spec.and(MiniaturaSpecification.escalaEquals(filtro.getEscala()));
-	    spec = spec.and(MiniaturaSpecification.precoGreaterThanOrEqual(filtro.getPrecoMin()));
-	    spec = spec.and(MiniaturaSpecification.precoLessThanOrEqual(filtro.getPrecoMax()));
+		spec = spec.and(MiniaturaSpecification.nomeContains(filtro.getNome()));
+		spec = spec.and(MiniaturaSpecification.marcaIdEquals(filtro.getMarcaId()));
+		spec = spec.and(MiniaturaSpecification.anoEquals(filtro.getAno()));
+		spec = spec.and(MiniaturaSpecification.tipoIdEquals(filtro.getTipoId()));
+		spec = spec.and(MiniaturaSpecification.linhaIdEquals(filtro.getLinhaId()));
+		spec = spec.and(MiniaturaSpecification.statusEquals(filtro.getStatus()));
+		spec = spec.and(MiniaturaSpecification.escalaEquals(filtro.getEscala()));
+		spec = spec.and(MiniaturaSpecification.precoGreaterThanOrEqual(filtro.getPrecoMin()));
+		spec = spec.and(MiniaturaSpecification.precoLessThanOrEqual(filtro.getPrecoMax()));
 
-	    Pageable sortedPageable = PageRequest.of(
-	            pageable.getPageNumber(),
-	            pageable.getPageSize(),
-	            Sort.by(Sort.Direction.DESC, "dataCadastro")
-	        );
-	    
-	    return repository.findAll(spec, sortedPageable);
+		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+				Sort.by(Sort.Direction.DESC, "dataCadastro"));
+
+		return repository.findAll(spec, sortedPageable);
 	}
-	
+
 	public byte[] comprimirImagem(MultipartFile file) throws IOException {
 		BufferedImage imagem = ImageIO.read(file.getInputStream());
 
@@ -197,7 +176,7 @@ public class MiniaturaService {
 
 		ImageWriteParam param = writer.getDefaultWriteParam();
 		param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-		param.setCompressionQuality(0.5f); // 🔥 ajuste aqui (0.5 - 0.8 ideal)
+		param.setCompressionQuality(0.1f); // 🔥 ajuste aqui (0.5 - 0.8 ideal)
 
 		writer.write(null, new IIOImage(resized, null, null), param);
 
@@ -224,7 +203,7 @@ public class MiniaturaService {
 			entity.setStatus(statusRepository.findById(dto.getStatusId())
 					.orElseThrow(() -> new RuntimeException("Status não encontrado")));
 		}
-		
+
 		// 🔥 Status
 		if (dto.getLinhaId() != null) {
 			entity.setLinha(linhaRepository.findById(dto.getLinhaId())
@@ -258,7 +237,8 @@ public class MiniaturaService {
 
 	public Miniatura update(Long id, Miniatura obj) {
 		try {
-			Miniatura entity = repository.getReferenceById(id);
+			Miniatura entity = repository.findById(id)
+					.orElseThrow(() -> new EntityNotFoundException("Miniatura não encontrada"));
 			updateData(entity, obj);
 			return repository.save(entity);
 		} catch (EntityNotFoundException e) {
@@ -277,9 +257,12 @@ public class MiniaturaService {
 	private void updateData(Miniatura entity, Miniatura obj) {
 		entity.setNome(obj.getNome());
 		entity.setMarca(obj.getMarca());
+		entity.setValor(obj.getValor());
 		entity.setTipos(obj.getTipos());
 		entity.setStatus(obj.getStatus());
-		entity.setImagem(obj.getImagem());
+		if (obj.getImagem() != null) {
+			entity.setImagem(obj.getImagem());
+		}
 		entity.setAno(obj.getAno());
 		entity.setEscala(obj.getEscala());
 		entity.setLinha(obj.getLinha());

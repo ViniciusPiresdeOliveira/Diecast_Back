@@ -59,10 +59,22 @@ public class MiniaturaController {
 		return service.insert(entity);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<Miniatura> update(@PathVariable Long id, @RequestBody Miniatura obj) {
-		obj = service.update(id, obj);
-		return ResponseEntity.ok(obj);
+	@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Miniatura> update(
+	        @PathVariable Long id,
+	        @RequestPart("miniatura") MiniaturaDTO dto,
+	        @RequestPart(value = "imagem", required = false) MultipartFile imagem
+	) throws IOException {
+
+	    Miniatura entity = service.fromDTO(dto);
+	    entity.setId(id);
+
+	    // só atualiza a imagem se vier uma nova
+	    if (imagem != null && !imagem.isEmpty()) {
+	        entity.setImagem(service.comprimirImagem(imagem));
+	    }
+	    entity = service.update(id, entity);
+	    return ResponseEntity.ok(entity);
 	}
 
 	@DeleteMapping("/{id}")
