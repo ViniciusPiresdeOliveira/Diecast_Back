@@ -1,6 +1,7 @@
 package com.diecast.diecast_back.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,12 +10,12 @@ import lombok.Setter;
 @Setter
 public class MiniaturaFilterDTO {
 	private String nome;
-	private Long marcaId;
+	private List<Long> marcaIds;
 	private Integer ano;
-	private Long tipoId;
-	private Long linhaId;
-	private String status;
-	private String escala;
+	private List<Long> tipoIds;
+	private List<Long> linhaIds;
+	private List<Long> statusIds;
+	private List<Long> escalaIds;
 	private BigDecimal precoMin;
 	private BigDecimal precoMax;
 

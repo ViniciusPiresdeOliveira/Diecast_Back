@@ -1,6 +1,7 @@
 package com.diecast.diecast_back.specification;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 import com.diecast.diecast_back.model.Miniatura;
@@ -14,10 +15,12 @@ public class MiniaturaSpecification {
         };
     }
 
-    public static Specification<Miniatura> marcaIdEquals(Long marcaId) {
+    public static Specification<Miniatura> marcaIdIn(List<Long> marcaIds) {
         return (root, query, cb) -> {
-            if (marcaId == null) return null;
-            return cb.equal(root.get("marca").get("id"), marcaId);
+            if (marcaIds == null || marcaIds.isEmpty()) {
+                return null;
+            }
+            return root.get("marca").get("id").in(marcaIds);
         };
     }
 
@@ -28,31 +31,43 @@ public class MiniaturaSpecification {
         };
     }
 
-    public static Specification<Miniatura> tipoIdEquals(Long tipoId) {
+    public static Specification<Miniatura> tipoIdIn(List<Long> tipoIds) {
         return (root, query, cb) -> {
-            if (tipoId == null) return null;
-            return cb.equal(root.get("tipo").get("id"), tipoId);
+            if (tipoIds == null || tipoIds.isEmpty()) {
+                return null;
+            }
+
+            // evita duplicidade por causa do join
+            query.distinct(true);
+
+            return root.join("tipos").get("id").in(tipoIds);
         };
     }
 
-    public static Specification<Miniatura> linhaIdEquals(Long linhaId) {
+    public static Specification<Miniatura> linhaIdIn(List<Long> linhaIds) {
         return (root, query, cb) -> {
-            if (linhaId == null) return null;
-            return cb.equal(root.get("linha").get("id"), linhaId);
+            if (linhaIds == null || linhaIds.isEmpty()) {
+                return null;
+            }
+            return root.get("linha").get("id").in(linhaIds);
         };
     }
 
-    public static Specification<Miniatura> statusEquals(String status) {
+    public static Specification<Miniatura> statusIdIn(List<Long> statusIds) {
         return (root, query, cb) -> {
-            if (status == null || status.isEmpty()) return null;
-            return cb.equal(root.get("status"), status);
+            if (statusIds == null || statusIds.isEmpty()) {
+                return null;
+            }
+            return root.get("status").get("id").in(statusIds);
         };
     }
 
-    public static Specification<Miniatura> escalaEquals(String escala) {
+    public static Specification<Miniatura> escalaIdIn(List<Long> escalaIds) {
         return (root, query, cb) -> {
-            if (escala == null || escala.isEmpty()) return null;
-            return cb.equal(root.get("escala"), escala);
+            if (escalaIds == null || escalaIds.isEmpty()) {
+                return null;
+            }
+            return root.get("escala").get("id").in(escalaIds);
         };
     }
 

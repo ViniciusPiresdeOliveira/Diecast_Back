@@ -136,12 +136,12 @@ public class MiniaturaService {
 		Specification<Miniatura> spec = Specification.where(null);
 
 		spec = spec.and(MiniaturaSpecification.nomeContains(filtro.getNome()));
-		spec = spec.and(MiniaturaSpecification.marcaIdEquals(filtro.getMarcaId()));
+		spec = spec.and(MiniaturaSpecification.marcaIdIn(filtro.getMarcaIds()));
 		spec = spec.and(MiniaturaSpecification.anoEquals(filtro.getAno()));
-		spec = spec.and(MiniaturaSpecification.tipoIdEquals(filtro.getTipoId()));
-		spec = spec.and(MiniaturaSpecification.linhaIdEquals(filtro.getLinhaId()));
-		spec = spec.and(MiniaturaSpecification.statusEquals(filtro.getStatus()));
-		spec = spec.and(MiniaturaSpecification.escalaEquals(filtro.getEscala()));
+		spec = spec.and(MiniaturaSpecification.tipoIdIn(filtro.getTipoIds()));
+		spec = spec.and(MiniaturaSpecification.linhaIdIn(filtro.getLinhaIds()));
+		spec = spec.and(MiniaturaSpecification.statusIdIn(filtro.getStatusIds()));
+		spec = spec.and(MiniaturaSpecification.escalaIdIn(filtro.getEscalaIds()));
 		spec = spec.and(MiniaturaSpecification.precoGreaterThanOrEqual(filtro.getPrecoMin()));
 		spec = spec.and(MiniaturaSpecification.precoLessThanOrEqual(filtro.getPrecoMax()));
 
@@ -176,7 +176,7 @@ public class MiniaturaService {
 
 		ImageWriteParam param = writer.getDefaultWriteParam();
 		param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-		param.setCompressionQuality(0.1f); // 🔥 ajuste aqui (0.5 - 0.8 ideal)
+		param.setCompressionQuality(0.4f); // 🔥 ajuste aqui (0.5 - 0.8 ideal)
 
 		writer.write(null, new IIOImage(resized, null, null), param);
 
