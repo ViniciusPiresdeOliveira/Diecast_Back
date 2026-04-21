@@ -31,4 +31,6 @@ public class MiniaturaDTO {
     private String dataCadastro;
     
     private String dataAtualizacao;
+    
+    private Long quantidadeEstoque;
 }

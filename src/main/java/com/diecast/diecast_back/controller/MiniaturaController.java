@@ -1,6 +1,7 @@
 package com.diecast.diecast_back.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +49,24 @@ public class MiniaturaController {
 	    return ResponseEntity.ok(similares);
 	}
 
+//	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//	@ResponseStatus(HttpStatus.CREATED)
+//	public Miniatura insert(@RequestPart("miniatura") MiniaturaDTO dto, @RequestPart("imagem") MultipartFile imagem)
+//			throws IOException {
+//
+//		Miniatura entity = service.fromDTO(dto);
+//
+//		entity.setImagem(service.comprimirImagem(imagem));
+//		return service.insert(entity);
+//	}
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public Miniatura insert(@RequestPart("miniatura") MiniaturaDTO dto, @RequestPart("imagem") MultipartFile imagem)
-			throws IOException {
+	public List<Miniatura> insert(
+	        @RequestPart("miniatura") MiniaturaDTO dto,
+	        @RequestPart("imagem") MultipartFile imagem
+	) throws IOException {
 
-		Miniatura entity = service.fromDTO(dto);
-
-		entity.setImagem(service.comprimirImagem(imagem));
-		return service.insert(entity);
+	    return service.insertEmLote(dto, imagem);
 	}
 
 	@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -69,7 +79,6 @@ public class MiniaturaController {
 	    Miniatura entity = service.fromDTO(dto);
 	    entity.setId(id);
 
-	    // só atualiza a imagem se vier uma nova
 	    if (imagem != null && !imagem.isEmpty()) {
 	        entity.setImagem(service.comprimirImagem(imagem));
 	    }

@@ -235,6 +235,36 @@ public class MiniaturaService {
 		return repository.save(obj);
 	}
 
+	public List<Miniatura> insertEmLote(MiniaturaDTO dto, MultipartFile imagem) throws IOException {
+
+	    Long quantidade = dto.getQuantidadeEstoque();
+
+	    Miniatura base = fromDTO(dto);
+
+	    byte[] imagemComprimida = comprimirImagem(imagem);
+
+	    List<Miniatura> lista = new ArrayList<>();
+
+	    for (int i = 0; i < quantidade; i++) {
+	        Miniatura entity = new Miniatura();
+
+	        entity.setNome(base.getNome());
+	        entity.setMarca(base.getMarca());
+	        entity.setValor(base.getValor());
+	        entity.setTipos(base.getTipos());
+	        entity.setStatus(base.getStatus());
+	        entity.setAno(base.getAno());
+	        entity.setEscala(base.getEscala());
+	        entity.setLinha(base.getLinha());
+
+	        entity.setImagem(imagemComprimida);
+
+	        lista.add(entity);
+	    }
+
+	    return repository.saveAll(lista);
+	}
+	
 	public Miniatura update(Long id, Miniatura obj) {
 		try {
 			Miniatura entity = repository.findById(id)
@@ -251,7 +281,7 @@ public class MiniaturaService {
 			throw new ResourceNotFoundException("Miniatura não encontrada");
 		}
 		repository.deleteById(id);
-//		repository.deleteAll();
+		//repository.deleteAll();
 	}
 
 	private void updateData(Miniatura entity, Miniatura obj) {
