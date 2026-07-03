@@ -13,6 +13,7 @@ import com.diecast.diecast_back.repository.UsuarioRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -41,12 +42,44 @@ public class SecurityFilter extends OncePerRequestFilter {
 	}
 
 	private String recoverToken(HttpServletRequest request) {
-		var authHeader = request.getHeader("Authorization");
-		if (authHeader == null) {
-			return null;
-		} else {
-			return authHeader.replace("Bearer ", "");
-		}
+	    // 🔹 1. tenta pelo header Authorization
+	    var authHeader = request.getHeader("Authorization");
+	    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+	        return authHeader.replace("Bearer ", "");
+	    }
+
+	    // 🔹 2. fallback: tenta pelos cookies
+	    if (request.getCookies() != null) {
+	        for (Cookie cookie : request.getCookies()) {
+	            if ("token".equals(cookie.getName())) {
+	                return cookie.getValue();
+	            }
+	        }
+	    }
+
+	    // 🔹 3. não encontrou
+	    return null;
 	}
+	
+//	private String recoverToken(HttpServletRequest request) {
+//		var authHeader = request.getHeader("Authorization");
+//		if (authHeader == null) {
+//			return null;
+//		} else {
+//			return authHeader.replace("Bearer ", "");
+//		}
+//	}
+	
+//	private String recoverToken(HttpServletRequest request) {
+//	    if (request.getCookies() == null) return null;
+//
+//	    for (Cookie cookie : request.getCookies()) {
+//	        if (cookie.getName().equals("token")) {
+//	            return cookie.getValue();
+//	        }
+//	    }
+//
+//	    return null;
+//	}
 
 }
