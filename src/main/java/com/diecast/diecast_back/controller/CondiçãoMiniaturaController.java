@@ -13,36 +13,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.diecast.diecast_back.model.StatusMiniatura;
-import com.diecast.diecast_back.service.StatusMiniaturaService;
+import com.diecast.diecast_back.model.CondicaoMiniatura;
+import com.diecast.diecast_back.service.CondicaoMiniaturaService;
 
 @RestController
-@RequestMapping("/status-miniatura")
-public class StatusMiniaturaController {
-	private final StatusMiniaturaService service;
+@RequestMapping("/condição-miniatura")
+public class CondiçãoMiniaturaController {
+	private final CondicaoMiniaturaService service;
 
-	public StatusMiniaturaController(StatusMiniaturaService service) {
+	public CondiçãoMiniaturaController(CondicaoMiniaturaService service) {
 		this.service = service;
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public StatusMiniatura create(@RequestBody StatusMiniatura linha) {
+	public CondicaoMiniatura create(@RequestBody CondicaoMiniatura linha) {
 		return service.criar(linha);
 	}
 
 	@GetMapping
-	public List<StatusMiniatura> findAll() {
+	public List<CondicaoMiniatura> findAll() {
 		return service.listar();
 	}
 
 	@GetMapping("/{id}")
-	public StatusMiniatura findById(@PathVariable Long id) {
+	public CondicaoMiniatura findById(@PathVariable Long id) {
 		return service.buscarPorId(id);
 	}
 
 	@PutMapping("/{id}")
-	public StatusMiniatura update(@PathVariable Long id, @RequestBody StatusMiniatura status) {
+	public CondicaoMiniatura update(@PathVariable Long id, @RequestBody CondicaoMiniatura status) {
 		return service.atualizar(id, status);
 	}
 

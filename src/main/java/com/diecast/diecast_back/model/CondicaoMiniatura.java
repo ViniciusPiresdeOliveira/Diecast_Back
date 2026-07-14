@@ -14,7 +14,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "status_miniatura")
+@Table(name = "condicao_miniatura")
 
 @Getter
 @Setter
@@ -22,7 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class StatusMiniatura {
+public class CondicaoMiniatura {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

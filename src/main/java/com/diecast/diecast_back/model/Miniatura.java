@@ -2,7 +2,6 @@ package com.diecast.diecast_back.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -45,6 +44,15 @@ public class Miniatura {
 
 	@Column(nullable = false)
 	private String nome;
+	
+	@Column(name = "quantidade_estoque", nullable = false)
+	private Long quantidadeEstoque;
+	
+	@Column(name = "quantidade_disponivel")
+	private Long quantidadeDisponivel;
+		
+	@Column(name = "quantidade_em_garagem")
+	private Long quantidadeEmGaragem;
 
 	@ManyToOne
 	@JoinColumn(name = "marca_id", nullable = false)
@@ -55,10 +63,10 @@ public class Miniatura {
 	private List<TipoMiniatura> tipos;
 
 	@ManyToOne
-	@JoinColumn(name = "status_id")
-	private StatusMiniatura status;
+	@JoinColumn(name = "condicao_id")
+	private CondicaoMiniatura condicao;
 
-	@Lob
+//	@Lob
 	@Column(name = "imagem", columnDefinition = "BYTEA")
 	private byte[] imagem;
 

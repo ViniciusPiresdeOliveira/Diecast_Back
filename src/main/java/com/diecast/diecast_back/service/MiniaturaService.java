@@ -26,13 +26,13 @@ import com.diecast.diecast_back.exception.ResourceNotFoundException;
 import com.diecast.diecast_back.model.EscalaMiniatura;
 import com.diecast.diecast_back.model.MarcaMiniatura;
 import com.diecast.diecast_back.model.Miniatura;
-import com.diecast.diecast_back.model.StatusMiniatura;
+import com.diecast.diecast_back.model.CondicaoMiniatura;
 import com.diecast.diecast_back.model.TipoMiniatura;
 import com.diecast.diecast_back.repository.EscalaMiniaturaRepository;
 import com.diecast.diecast_back.repository.LinhaMiniaturaRepository;
 import com.diecast.diecast_back.repository.MarcaMiniaturaRepository;
 import com.diecast.diecast_back.repository.MiniaturaRepository;
-import com.diecast.diecast_back.repository.StatusMiniaturaRepository;
+import com.diecast.diecast_back.repository.CondicaoMiniaturaRepository;
 import com.diecast.diecast_back.repository.TipoMiniaturaRepository;
 import com.diecast.diecast_back.specification.MiniaturaSpecification;
 
@@ -58,7 +58,7 @@ public class MiniaturaService {
 	private TipoMiniaturaRepository tipoRepository;
 
 	@Autowired
-	private StatusMiniaturaRepository statusRepository;
+	private CondicaoMiniaturaRepository condicaoRepository;
 
 	@Autowired
 	private EscalaMiniaturaRepository escalaRepository;
@@ -199,9 +199,9 @@ public class MiniaturaService {
 				.orElseThrow(() -> new RuntimeException("Marca não encontrada")));
 
 		// 🔥 Status
-		if (dto.getStatusId() != null) {
-			entity.setStatus(statusRepository.findById(dto.getStatusId())
-					.orElseThrow(() -> new RuntimeException("Status não encontrado")));
+		if (dto.getCondicaoId() != null) {
+			entity.setCondicao(condicaoRepository.findById(dto.getCondicaoId())
+					.orElseThrow(() -> new RuntimeException("Condição não encontrada")));
 		}
 
 		// 🔥 Status
@@ -234,36 +234,6 @@ public class MiniaturaService {
 	public Miniatura insert(Miniatura obj) {
 		return repository.save(obj);
 	}
-
-	public List<Miniatura> insertEmLote(MiniaturaDTO dto, MultipartFile imagem) throws IOException {
-
-	    Long quantidade = dto.getQuantidadeEstoque();
-
-	    Miniatura base = fromDTO(dto);
-
-	    byte[] imagemComprimida = comprimirImagem(imagem);
-
-	    List<Miniatura> lista = new ArrayList<>();
-
-	    for (int i = 0; i < quantidade; i++) {
-	        Miniatura entity = new Miniatura();
-
-	        entity.setNome(base.getNome());
-	        entity.setMarca(base.getMarca());
-	        entity.setValor(base.getValor());
-	        entity.setTipos(base.getTipos());
-	        entity.setStatus(base.getStatus());
-	        entity.setAno(base.getAno());
-	        entity.setEscala(base.getEscala());
-	        entity.setLinha(base.getLinha());
-
-	        entity.setImagem(imagemComprimida);
-
-	        lista.add(entity);
-	    }
-
-	    return repository.saveAll(lista);
-	}
 	
 	public Miniatura update(Long id, Miniatura obj) {
 		try {
@@ -289,7 +259,10 @@ public class MiniaturaService {
 		entity.setMarca(obj.getMarca());
 		entity.setValor(obj.getValor());
 		entity.setTipos(obj.getTipos());
-		entity.setStatus(obj.getStatus());
+		entity.setQuantidadeEmGaragem(obj.getQuantidadeEmGaragem());
+		entity.setQuantidadeDisponivel(obj.getQuantidadeDisponivel());
+		entity.setQuantidadeEstoque(obj.getQuantidadeEstoque());
+		entity.setCondicao(obj.getCondicao());
 		if (obj.getImagem() != null) {
 			entity.setImagem(obj.getImagem());
 		}

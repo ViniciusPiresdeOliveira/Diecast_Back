@@ -2,8 +2,6 @@ package com.diecast.diecast_back.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,10 +11,10 @@ public class MiniaturaDTO {
     private String nome;
 
     private Long marcaId;
-
+    
     private List<Long> tiposIds;
 
-    private Long statusId;
+    private Long condicaoId;
 
     private Long escalaId;
     
@@ -33,4 +31,8 @@ public class MiniaturaDTO {
     private String dataAtualizacao;
     
     private Long quantidadeEstoque;
+
+    private Long quantidadeDisponivel;
+
+    private Long quantidadeEmGaragem;
 }

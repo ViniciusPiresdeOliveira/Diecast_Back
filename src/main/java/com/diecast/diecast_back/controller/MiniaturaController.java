@@ -49,24 +49,19 @@ public class MiniaturaController {
 	    return ResponseEntity.ok(similares);
 	}
 
-//	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//	@ResponseStatus(HttpStatus.CREATED)
-//	public Miniatura insert(@RequestPart("miniatura") MiniaturaDTO dto, @RequestPart("imagem") MultipartFile imagem)
-//			throws IOException {
-//
-//		Miniatura entity = service.fromDTO(dto);
-//
-//		entity.setImagem(service.comprimirImagem(imagem));
-//		return service.insert(entity);
-//	}
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public List<Miniatura> insert(
-	        @RequestPart("miniatura") MiniaturaDTO dto,
-	        @RequestPart("imagem") MultipartFile imagem
-	) throws IOException {
+	public Miniatura insert(@RequestPart("miniatura") MiniaturaDTO dto, @RequestPart("imagem") MultipartFile imagem)
+			throws IOException {
 
-	    return service.insertEmLote(dto, imagem);
+		Miniatura entity = service.fromDTO(dto);
+
+		entity.setQuantidadeEstoque(dto.getQuantidadeEstoque());
+		entity.setQuantidadeDisponivel(dto.getQuantidadeEstoque());
+		entity.setQuantidadeEmGaragem((long) 0);		
+		
+		entity.setImagem(service.comprimirImagem(imagem));
+		return service.insert(entity);
 	}
 
 	@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -78,6 +73,10 @@ public class MiniaturaController {
 
 	    Miniatura entity = service.fromDTO(dto);
 	    entity.setId(id);
+	    
+	    entity.setQuantidadeEstoque(dto.getQuantidadeEstoque());
+		entity.setQuantidadeDisponivel(dto.getQuantidadeDisponivel());		
+		entity.setQuantidadeEmGaragem(dto.getQuantidadeEmGaragem());
 
 	    if (imagem != null && !imagem.isEmpty()) {
 	        entity.setImagem(service.comprimirImagem(imagem));
