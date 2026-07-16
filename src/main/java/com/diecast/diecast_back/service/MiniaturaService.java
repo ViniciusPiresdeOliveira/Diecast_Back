@@ -81,6 +81,8 @@ public class MiniaturaService {
 		// 🔥 1. Busca principais (mais relevantes)
 		Specification<Miniatura> spec = Specification.where(null);
 
+		spec = spec.and((root, query, cb) -> cb.greaterThan(root.get("quantidadeDisponivel"), 0));
+
 		if (base.getMarca() != null) {
 			spec = spec.and((root, query, cb) -> cb.equal(root.get("marca"), base.getMarca()));
 		}
@@ -144,8 +146,10 @@ public class MiniaturaService {
 		spec = spec.and(MiniaturaSpecification.escalaIdIn(filtro.getEscalaIds()));
 		spec = spec.and(MiniaturaSpecification.precoGreaterThanOrEqual(filtro.getPrecoMin()));
 		spec = spec.and(MiniaturaSpecification.precoLessThanOrEqual(filtro.getPrecoMax()));
-		spec = spec.and(MiniaturaSpecification.quantidadeDisponivelGreaterThanOrEqual(filtro.getQuantidadeDisponivelMin()));
-		spec = spec.and(MiniaturaSpecification.quantidadeDisponivelLessThanOrEqual(filtro.getQuantidadeDisponivelMax()));
+		spec = spec.and(
+				MiniaturaSpecification.quantidadeDisponivelGreaterThanOrEqual(filtro.getQuantidadeDisponivelMin()));
+		spec = spec
+				.and(MiniaturaSpecification.quantidadeDisponivelLessThanOrEqual(filtro.getQuantidadeDisponivelMax()));
 
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
 				Sort.by(Sort.Direction.DESC, "dataCadastro"));
@@ -236,7 +240,7 @@ public class MiniaturaService {
 	public Miniatura insert(Miniatura obj) {
 		return repository.save(obj);
 	}
-	
+
 	public Miniatura update(Long id, Miniatura obj) {
 		try {
 			Miniatura entity = repository.findById(id)
@@ -253,7 +257,7 @@ public class MiniaturaService {
 			throw new ResourceNotFoundException("Miniatura não encontrada");
 		}
 		repository.deleteById(id);
-		//repository.deleteAll();
+		// repository.deleteAll();
 	}
 
 	private void updateData(Miniatura entity, Miniatura obj) {
