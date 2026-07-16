@@ -18,7 +18,9 @@ public class MiniaturaFilterDTO {
 	private List<Long> escalaIds;
 	private BigDecimal precoMin;
 	private BigDecimal precoMax;
-
+	private Integer quantidadeDisponivelMin;
+	private Integer quantidadeDisponivelMax;
+	
 	private int page = 0;
 	private int size = 10;
 }

@@ -84,4 +84,18 @@ public class MiniaturaSpecification {
             return cb.lessThanOrEqualTo(root.get("valor"), valorMax);
         };
     }
+    
+    public static Specification<Miniatura> quantidadeDisponivelGreaterThanOrEqual(Integer qtd) {
+        return (root, query, cb) -> {
+            if (qtd == null) return null;
+            return cb.greaterThanOrEqualTo(root.get("quantidadeDisponivel"), qtd);
+        };
+    }
+    
+    public static Specification<Miniatura> quantidadeDisponivelLessThanOrEqual(Integer qtd) {
+        return (root, query, cb) -> {
+            if (qtd == null) return null;
+            return cb.lessThanOrEqualTo(root.get("quantidadeDisponivel"), qtd);
+        };
+    }
 }

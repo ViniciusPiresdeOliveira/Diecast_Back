@@ -144,6 +144,8 @@ public class MiniaturaService {
 		spec = spec.and(MiniaturaSpecification.escalaIdIn(filtro.getEscalaIds()));
 		spec = spec.and(MiniaturaSpecification.precoGreaterThanOrEqual(filtro.getPrecoMin()));
 		spec = spec.and(MiniaturaSpecification.precoLessThanOrEqual(filtro.getPrecoMax()));
+		spec = spec.and(MiniaturaSpecification.quantidadeDisponivelGreaterThanOrEqual(filtro.getQuantidadeDisponivelMin()));
+		spec = spec.and(MiniaturaSpecification.quantidadeDisponivelLessThanOrEqual(filtro.getQuantidadeDisponivelMax()));
 
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
 				Sort.by(Sort.Direction.DESC, "dataCadastro"));
