@@ -26,19 +26,42 @@ public class SecurityFilter extends OncePerRequestFilter {
 	@Autowired
 	UsuarioRepository usuarioRepository;
 
+//	@Override
+//	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+//			throws ServletException, IOException {
+//		var token = this.recoverToken(request);
+//		if (token != null) {
+//			var login = tokenService.validateToken(token);
+//			UserDetails user = usuarioRepository.findByLogin(login);
+//
+//			var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+//			SecurityContextHolder.getContext().setAuthentication(authentication);
+//		}
+//		filterChain.doFilter(request, response);
+//	}
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+
 		var token = this.recoverToken(request);
+
 		if (token != null) {
 			var login = tokenService.validateToken(token);
-			UserDetails user = usuarioRepository.findByLogin(login);
 
-			var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+			if (login != null && !login.isEmpty()) {
+				UserDetails user = usuarioRepository.findByLogin(login);
+
+				if (user != null) {
+					var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+				}
+				// se user == null, apenas segue sem autenticar (token válido mas usuário não
+				// existe mais, por ex.)
+			}
+			// se login == null, token é inválido/expirado -> segue sem autenticar
 		}
-		filterChain.doFilter(request, response);
 
+		filterChain.doFilter(request, response);
 	}
 
 	private String recoverToken(HttpServletRequest request) {

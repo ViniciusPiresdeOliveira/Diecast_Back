@@ -83,8 +83,44 @@ public class GaragemService {
 		return repository.save(entity);
 	}
 
-	public void delete(Long id) {
-		repository.deleteById(id);
+	@Transactional
+	public void deleteMiniInSystem(Long id) {
+		Garagem garagem = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Garagem não encontrada com id: " + id));
+
+		Miniatura miniatura = garagem.getMiniatura();
+		Long quantidade = garagem.getQuantidade();
+
+		validarQuantidade(quantidade);
+
+		boolean clienteDetemTodoEstoque = quantidade.equals(miniatura.getQuantidadeEstoque());
+
+		repository.delete(garagem);
+
+		if (clienteDetemTodoEstoque) {
+			miniaturaRepository.delete(miniatura);
+		} else {
+			miniatura.setQuantidadeEstoque(miniatura.getQuantidadeEstoque() - quantidade);
+			miniatura.setQuantidadeEmGaragem(subtrairSemNegativo(miniatura.getQuantidadeEmGaragem(), quantidade));
+			miniaturaRepository.save(miniatura);
+		}
+	}
+	
+	@Transactional
+	public void deleteMiniInGarage(Long id) {
+		Garagem garagem = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Garagem não encontrada com id: " + id));
+
+		Miniatura miniatura = garagem.getMiniatura();
+		Long quantidade = garagem.getQuantidade();
+
+		validarQuantidade(quantidade);
+
+		repository.delete(garagem);
+
+		miniatura.setQuantidadeEmGaragem(subtrairSemNegativo(miniatura.getQuantidadeEmGaragem(), quantidade));
+		miniatura.setQuantidadeDisponivel(miniatura.getQuantidadeDisponivel() + quantidade);
+		miniaturaRepository.save(miniatura);
 	}
 
 	public ClienteGaragemDTO buscarClienteComGaragem(Long clienteId) {
@@ -130,5 +166,10 @@ public class GaragemService {
 			throw new DatabaseException(
 					"Existem apenas " + miniatura.getQuantidadeDisponivel() + " miniaturas disponíveis");
 		}
+	}
+	
+	private Long subtrairSemNegativo(Long atual, Long quantidade) {
+		long base = atual == null ? 0L : atual;
+		return Math.max(0L, base - quantidade);
 	}
 }

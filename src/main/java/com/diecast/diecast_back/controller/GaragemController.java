@@ -44,9 +44,15 @@ public class GaragemController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+    @DeleteMapping("/{id}/entregue")
+    public ResponseEntity<Void> deleteMiniInSystem(@PathVariable Long id) {
+        service.deleteMiniInSystem(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}/desistencia")
+    public ResponseEntity<Void> deleteMiniInGarage(@PathVariable Long id) {
+        service.deleteMiniInGarage(id);
         return ResponseEntity.noContent().build();
     }
 }
