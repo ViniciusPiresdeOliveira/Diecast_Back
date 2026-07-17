@@ -64,7 +64,8 @@ public class AuthenticationController {
 	    cookie.setHttpOnly(true);
 	    cookie.setSecure(false); // true em produção (HTTPS)
 	    cookie.setPath("/");
-	    cookie.setMaxAge(60 * 60 * 24); // 1 dia
+	    cookie.setMaxAge(60 * 60 * 18); // 14 h
+	    //cookie.setMaxAge(5);
 
 	    response.addCookie(cookie);
 

@@ -13,9 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -34,14 +37,38 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						//.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
 						.requestMatchers(HttpMethod.POST, "/miniaturas/filtro").permitAll()
+						.requestMatchers(HttpMethod.GET, "/cliente").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
 						.anyRequest().permitAll())
+				.exceptionHandling(exception -> exception
+						.accessDeniedHandler(accessDeniedHandler())          // usuário autenticado, sem permissão
+						.authenticationEntryPoint(authenticationEntryPoint()) // 👈 usuário anônimo/token inválido
+				)
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
+	
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return (HttpServletRequest request, HttpServletResponse response,
+				AccessDeniedException accessDeniedException) -> {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setContentType("application/json");
+			response.getWriter().write("");
+		};
+	}
 
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+		return (HttpServletRequest request, HttpServletResponse response,
+				AuthenticationException authException) -> {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setContentType("application/json");
+			response.getWriter().write("");
+		};
+	}
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
 			throws Exception {

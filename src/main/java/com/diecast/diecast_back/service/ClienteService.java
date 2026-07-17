@@ -1,6 +1,5 @@
 package com.diecast.diecast_back.service;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.diecast.diecast_back.exception.DatabaseException;
@@ -8,14 +7,17 @@ import com.diecast.diecast_back.exception.ResourceNotFoundException;
 import com.diecast.diecast_back.model.Cliente;
 import com.diecast.diecast_back.repository.ClienteRepository;
 
-import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ClienteService {
 
 	private final ClienteRepository repository;
+	
+	public ClienteService(ClienteRepository repository) {
+		this.repository = repository;
+	}
+
 
 	public List<Cliente> findAll() {
 		return repository.findAll();

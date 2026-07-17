@@ -2,6 +2,7 @@ package com.diecast.diecast_back.exception;
 
 import java.time.Instant;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -62,5 +63,18 @@ public class GlobalExceptionHandler {
 		err.setPath(request.getRequestURI());
 
 		return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(err);
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandardError> handleDataIntegrityViolation(DataIntegrityViolationException e,
+			HttpServletRequest request) {
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.CONFLICT.value());
+		err.setError("Conflito de integridade");
+		err.setMessage(e.getMessage() != null ? e.getMessage()
+				: "Não é possível excluir este recurso, pois ele está sendo utilizado em outro registro.");
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(err);
 	}
 }

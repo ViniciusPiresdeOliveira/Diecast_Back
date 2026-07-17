@@ -17,11 +17,13 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.diecast.diecast_back.dto.MiniaturaDTO;
 import com.diecast.diecast_back.dto.MiniaturaFilterDTO;
+import com.diecast.diecast_back.exception.DatabaseException;
 import com.diecast.diecast_back.exception.ResourceNotFoundException;
 import com.diecast.diecast_back.model.EscalaMiniatura;
 import com.diecast.diecast_back.model.MarcaMiniatura;
@@ -256,8 +258,11 @@ public class MiniaturaService {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException("Miniatura não encontrada");
 		}
-		repository.deleteById(id);
-		// repository.deleteAll();
+		try {
+	        repository.deleteById(id);
+	    } catch (DataIntegrityViolationException e) {
+	        throw new DataIntegrityViolationException("Não é possível excluir esta miniatura, pois ela está presente em uma ou mais garagens");
+	    }
 	}
 
 	private void updateData(Miniatura entity, Miniatura obj) {

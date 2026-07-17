@@ -1,0 +1,22 @@
+package com.diecast.diecast_back.dto;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class MiniaturaGaragemDTO {
+	private Long id;
+	private String nome;
+	private GenericDTO marca;
+	private List<GenericDTO> tipos;
+	private GenericDTO condicao;
+	private Long ano;
+	private GenericDTO escala;
+	private GenericDTO linha;
+	private BigDecimal valor;
+	private Long quantidadeEmGaragem;
+}

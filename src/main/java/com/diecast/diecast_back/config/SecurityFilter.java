@@ -33,7 +33,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 		if (token != null) {
 			var login = tokenService.validateToken(token);
 			UserDetails user = usuarioRepository.findByLogin(login);
-			
+
 			var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
@@ -42,25 +42,25 @@ public class SecurityFilter extends OncePerRequestFilter {
 	}
 
 	private String recoverToken(HttpServletRequest request) {
-	    // 🔹 1. tenta pelo header Authorization
-	    var authHeader = request.getHeader("Authorization");
-	    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-	        return authHeader.replace("Bearer ", "");
-	    }
+		// 🔹 1. tenta pelo header Authorization
+		var authHeader = request.getHeader("Authorization");
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			return authHeader.replace("Bearer ", "");
+		}
 
-	    // 🔹 2. fallback: tenta pelos cookies
-	    if (request.getCookies() != null) {
-	        for (Cookie cookie : request.getCookies()) {
-	            if ("token".equals(cookie.getName())) {
-	                return cookie.getValue();
-	            }
-	        }
-	    }
+		// 🔹 2. fallback: tenta pelos cookies
+		if (request.getCookies() != null) {
+			for (Cookie cookie : request.getCookies()) {
+				if ("token".equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
 
-	    // 🔹 3. não encontrou
-	    return null;
+		// 🔹 3. não encontrou
+		return null;
 	}
-	
+
 //	private String recoverToken(HttpServletRequest request) {
 //		var authHeader = request.getHeader("Authorization");
 //		if (authHeader == null) {
@@ -69,7 +69,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 //			return authHeader.replace("Bearer ", "");
 //		}
 //	}
-	
+
 //	private String recoverToken(HttpServletRequest request) {
 //	    if (request.getCookies() == null) return null;
 //
