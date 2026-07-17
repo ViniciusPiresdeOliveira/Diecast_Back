@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.diecast.diecast_back.dto.MiniaturaDTO;
 import com.diecast.diecast_back.dto.MiniaturaFilterDTO;
+import com.diecast.diecast_back.exception.ResourceNotFoundException;
 import com.diecast.diecast_back.model.Miniatura;
 import com.diecast.diecast_back.service.MiniaturaService;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,19 @@ public class MiniaturaController {
 	@GetMapping("/{id}")
 	public Miniatura findById(@PathVariable Long id) {
 		return service.findById(id);
+	}
+	
+	@GetMapping("/{id}/imagem")
+	public ResponseEntity<byte[]> getImagem(@PathVariable Long id) {
+	    Miniatura miniatura = service.findById(id);
+
+	    if (miniatura.getImagem() == null) {
+	        throw new ResourceNotFoundException("Miniatura não possui imagem cadastrada");
+	    }
+
+	    return ResponseEntity.ok()
+	            .contentType(MediaType.IMAGE_JPEG)
+	            .body(miniatura.getImagem());
 	}
 	
 	@GetMapping("/similares/{id}")

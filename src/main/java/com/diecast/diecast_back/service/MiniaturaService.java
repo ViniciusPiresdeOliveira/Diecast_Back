@@ -184,7 +184,7 @@ public class MiniaturaService {
 
 		ImageWriteParam param = writer.getDefaultWriteParam();
 		param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-		param.setCompressionQuality(0.4f); // 🔥 ajuste aqui (0.5 - 0.8 ideal)
+		param.setCompressionQuality(0.2f); // 🔥 ajuste aqui (0.5 - 0.8 ideal)
 
 		writer.write(null, new IIOImage(resized, null, null), param);
 
