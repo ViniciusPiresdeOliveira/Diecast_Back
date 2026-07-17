@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.diecast.diecast_back.dto.ClienteGaragemDTO;
 import com.diecast.diecast_back.dto.GaragemDTO;
+import com.diecast.diecast_back.dto.GaragemUpdateDTO;
 import com.diecast.diecast_back.dto.MiniaturaGaragemDTO;
 import com.diecast.diecast_back.dto.GenericDTO;
 import com.diecast.diecast_back.exception.DatabaseException;
@@ -50,6 +51,10 @@ public class GaragemService {
 		Cliente cliente = clienteRepository.findById(dto.getClienteId()).orElseThrow(
 				() -> new ResourceNotFoundException("Cliente não encontrado com id: " + dto.getClienteId()));
 
+		 if (repository.existsByClienteIdAndMiniaturaId(dto.getClienteId(), dto.getMiniaturaId())) {
+		        throw new DatabaseException("Este cliente já possui esta miniatura na garagem. Atualize a quantidade em vez de criar um novo registro.");
+		    }
+		
 		validarEstoqueDisponivel(miniatura, dto.getQuantidade());
 
 		miniatura.setQuantidadeDisponivel(miniatura.getQuantidadeDisponivel() - dto.getQuantidade());
@@ -64,23 +69,40 @@ public class GaragemService {
 		return repository.save(obj);
 	}
 
-	public Garagem update(Long id, GaragemDTO dto) {
-		Garagem entity = repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Garagem não encontrada com id: " + id));
+	@Transactional
+	public Garagem update(Long id, GaragemUpdateDTO dto) {
+	    Garagem entity = repository.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Garagem não encontrada com id: " + id));
 
-		validarQuantidade(dto.getQuantidade());
+	    validarQuantidade(dto.getQuantidade());
 
-		Miniatura miniatura = miniaturaRepository.findById(dto.getMiniaturaId()).orElseThrow(
-				() -> new ResourceNotFoundException("Miniatura não encontrada com id: " + dto.getMiniaturaId()));
+	    Miniatura miniatura = entity.getMiniatura();
+	    Long quantidadeAntiga = entity.getQuantidade();
+	    Long quantidadeNova = dto.getQuantidade();
+	    Long diferenca = quantidadeNova - quantidadeAntiga;
 
-		Cliente cliente = clienteRepository.findById(dto.getClienteId()).orElseThrow(
-				() -> new ResourceNotFoundException("Cliente não encontrado com id: " + dto.getClienteId()));
+	    Long limiteMaximo = miniatura.getQuantidadeDisponivel() + quantidadeAntiga;
 
-		entity.setQuantidade(dto.getQuantidade());
-		entity.setMiniatura(miniatura);
-		entity.setCliente(cliente);
+	    if (quantidadeNova > limiteMaximo) {
+	        String mensagem = limiteMaximo == 1
+	                ? "Você pode ter no máximo 1 unidade desta miniatura na garagem"
+	                : "Você pode ter no máximo " + limiteMaximo + " unidades desta miniatura na garagem";
+	        throw new DatabaseException(mensagem);
+	    }
 
-		return repository.save(entity);
+	    if (diferenca > 0) {
+	        miniatura.setQuantidadeDisponivel(miniatura.getQuantidadeDisponivel() - diferenca);
+	        miniatura.setQuantidadeEmGaragem(miniatura.getQuantidadeEmGaragem() + diferenca);
+	    } else if (diferenca < 0) {
+	        Long devolucao = -diferenca;
+	        miniatura.setQuantidadeDisponivel(miniatura.getQuantidadeDisponivel() + devolucao);
+	        miniatura.setQuantidadeEmGaragem(miniatura.getQuantidadeEmGaragem() - devolucao);
+	    }
+
+	    miniaturaRepository.save(miniatura);
+
+	    entity.setQuantidade(quantidadeNova);
+	    return repository.save(entity);
 	}
 
 	@Transactional
@@ -162,10 +184,13 @@ public class GaragemService {
 	}
 
 	private void validarEstoqueDisponivel(Miniatura miniatura, Long quantidade) {
-		if (miniatura.getQuantidadeDisponivel() < quantidade) {
-			throw new DatabaseException(
-					"Existem apenas " + miniatura.getQuantidadeDisponivel() + " miniaturas disponíveis");
-		}
+	    if (miniatura.getQuantidadeDisponivel() < quantidade) {
+	        Long disponivel = miniatura.getQuantidadeDisponivel();
+	        String mensagem = disponivel == 1
+	                ? "Existe apenas 1 miniatura disponível"
+	                : "Existem apenas " + disponivel + " miniaturas disponíveis";
+	        throw new DatabaseException(mensagem);
+	    }
 	}
 	
 	private Long subtrairSemNegativo(Long atual, Long quantidade) {

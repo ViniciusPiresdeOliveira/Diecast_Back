@@ -16,4 +16,7 @@ public interface GaragemRepository extends JpaRepository<Garagem, Long> {
 			WHERE g.cliente.id = :clienteId
 			""")
 	List<Garagem> findByClienteIdWithMiniatura(Long clienteId);
+	
+	boolean existsByClienteIdAndMiniaturaId(Long clienteId, Long miniaturaId);
+
 }

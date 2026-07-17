@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.diecast.diecast_back.dto.ClienteGaragemDTO;
 import com.diecast.diecast_back.dto.GaragemDTO;
+import com.diecast.diecast_back.dto.GaragemUpdateDTO;
 import com.diecast.diecast_back.model.Garagem;
 import com.diecast.diecast_back.service.GaragemService;
 
@@ -40,7 +41,7 @@ public class GaragemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Garagem> update(@PathVariable Long id, @RequestBody GaragemDTO dto) {
+    public ResponseEntity<Garagem> update(@PathVariable Long id, @RequestBody GaragemUpdateDTO dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
