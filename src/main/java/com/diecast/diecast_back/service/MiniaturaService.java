@@ -144,7 +144,7 @@ public class MiniaturaService {
 		spec = spec.and(MiniaturaSpecification.anoEquals(filtro.getAno()));
 		spec = spec.and(MiniaturaSpecification.tipoIdIn(filtro.getTipoIds()));
 		spec = spec.and(MiniaturaSpecification.linhaIdIn(filtro.getLinhaIds()));
-		spec = spec.and(MiniaturaSpecification.statusIdIn(filtro.getStatusIds()));
+		spec = spec.and(MiniaturaSpecification.condicaoIdIn(filtro.getCondicaoIds()));
 		spec = spec.and(MiniaturaSpecification.escalaIdIn(filtro.getEscalaIds()));
 		spec = spec.and(MiniaturaSpecification.precoGreaterThanOrEqual(filtro.getPrecoMin()));
 		spec = spec.and(MiniaturaSpecification.precoLessThanOrEqual(filtro.getPrecoMax()));

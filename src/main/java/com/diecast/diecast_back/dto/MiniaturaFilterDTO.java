@@ -14,7 +14,7 @@ public class MiniaturaFilterDTO {
 	private Integer ano;
 	private List<Long> tipoIds;
 	private List<Long> linhaIds;
-	private List<Long> statusIds;
+	private List<Long> condicaoIds;
 	private List<Long> escalaIds;
 	private BigDecimal precoMin;
 	private BigDecimal precoMax;

@@ -1,6 +1,8 @@
 package com.diecast.diecast_back.dto;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Getter;
@@ -19,4 +21,5 @@ public class MiniaturaGaragemDTO {
 	private GenericDTO linha;
 	private BigDecimal valor;
 	private Long quantidadeEmGaragem;
+    private Instant dataCadastro;
 }

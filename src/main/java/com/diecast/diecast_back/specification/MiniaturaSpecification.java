@@ -53,7 +53,7 @@ public class MiniaturaSpecification {
         };
     }
 
-    public static Specification<Miniatura> statusIdIn(List<Long> statusIds) {
+    public static Specification<Miniatura> condicaoIdIn(List<Long> statusIds) {
         return (root, query, cb) -> {
             if (statusIds == null || statusIds.isEmpty()) {
                 return null;

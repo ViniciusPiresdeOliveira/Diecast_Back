@@ -1,5 +1,6 @@
 package com.diecast.diecast_back.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.diecast.diecast_back.exception.DatabaseException;
@@ -13,11 +14,17 @@ import java.util.List;
 public class ClienteService {
 
 	private final ClienteRepository repository;
-	
+
 	public ClienteService(ClienteRepository repository) {
 		this.repository = repository;
 	}
 
+	public List<Cliente> search(String termo) {
+		if (termo == null || termo.isBlank()) {
+			return findAll();
+		}
+		return repository.search(termo.trim());
+	}
 
 	public List<Cliente> findAll() {
 		return repository.findAll();
@@ -49,6 +56,13 @@ public class ClienteService {
 
 	public void delete(Long id) {
 		Cliente cliente = findById(id);
-		repository.delete(cliente);
+
+		try {
+			repository.delete(cliente);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(String.format(
+					"Não é possível excluir %s, pois existem miniaturas vinculadas à sua garagem",
+					cliente.getNome()));
+		}
 	}
 }

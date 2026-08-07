@@ -17,11 +17,11 @@ import com.diecast.diecast_back.model.CondicaoMiniatura;
 import com.diecast.diecast_back.service.CondicaoMiniaturaService;
 
 @RestController
-@RequestMapping("/condição-miniatura")
-public class CondiçãoMiniaturaController {
+@RequestMapping("/condicao-miniatura")
+public class CondicaoMiniaturaController {
 	private final CondicaoMiniaturaService service;
 
-	public CondiçãoMiniaturaController(CondicaoMiniaturaService service) {
+	public CondicaoMiniaturaController(CondicaoMiniaturaService service) {
 		this.service = service;
 	}
 
