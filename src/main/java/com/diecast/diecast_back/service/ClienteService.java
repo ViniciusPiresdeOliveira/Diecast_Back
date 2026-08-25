@@ -45,6 +45,10 @@ public class ClienteService {
 
 	public Cliente update(Long id, Cliente clienteAtualizado) {
 		Cliente cliente = findById(id);
+		
+	    if (repository.existsByTelefoneAndIdNot(clienteAtualizado.getTelefone(), id)) {
+	        throw new DatabaseException("Telefone já cadastrado");
+	    }
 
 		cliente.setNome(clienteAtualizado.getNome());
 		cliente.setTelefone(clienteAtualizado.getTelefone());

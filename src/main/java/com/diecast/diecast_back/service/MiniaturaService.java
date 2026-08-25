@@ -242,6 +242,30 @@ public class MiniaturaService {
 	public Miniatura insert(Miniatura obj) {
 		return repository.save(obj);
 	}
+	
+	public Miniatura baixarEstoque(Long id, Long quantidade) {
+	    Miniatura miniatura = findById(id);
+
+	    Long estoqueAtual = miniatura.getQuantidadeEstoque() != null ? miniatura.getQuantidadeEstoque() : 0L;
+	    Long disponivelAtual = miniatura.getQuantidadeDisponivel() != null ? miniatura.getQuantidadeDisponivel() : 0L;
+
+	    if (quantidade > estoqueAtual) {
+	        throw new DatabaseException(
+	            "Quantidade a excluir (" + quantidade + ") é maior que a Quantidade em Estoque (" + estoqueAtual + ")"
+	        );
+	    }
+
+	    if (quantidade > disponivelAtual) {
+	        throw new DatabaseException(
+	            "Quantidade a excluir (" + quantidade + ") é maior que a Quantidade Disponível (" + disponivelAtual + ")"
+	        );
+	    }
+
+	    miniatura.setQuantidadeEstoque(estoqueAtual - quantidade);
+	    miniatura.setQuantidadeDisponivel(disponivelAtual - quantidade);
+
+	    return repository.save(miniatura);
+	}
 
 	public Miniatura update(Long id, Miniatura obj) {
 		try {

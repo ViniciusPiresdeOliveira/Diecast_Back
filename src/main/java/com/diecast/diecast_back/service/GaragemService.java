@@ -158,7 +158,8 @@ public class GaragemService {
 				.sorted(Comparator.comparing(Garagem::getDataCadastro).reversed()).map(g -> {
 					Miniatura m = g.getMiniatura();
 					MiniaturaGaragemDTO dto = new MiniaturaGaragemDTO();
-					dto.setId(m.getId());
+					dto.setIdGaragem(g.getId());
+					dto.setIdMiniatura(m.getId());
 					dto.setNome(m.getNome());
 					dto.setMarca(new GenericDTO(m.getMarca().getId(), m.getMarca().getNome()));
 					dto.setTipos(m.getTipos().stream().map(t -> new GenericDTO(t.getId(), t.getNome())).toList());

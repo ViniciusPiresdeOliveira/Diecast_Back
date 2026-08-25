@@ -11,7 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MiniaturaGaragemDTO {
-	private Long id;
+	private Long idMiniatura;
+	private Long idGaragem;
 	private String nome;
 	private GenericDTO marca;
 	private List<GenericDTO> tipos;

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.diecast.diecast_back.dto.MiniaturaBaixaEstoqueDTO;
 import com.diecast.diecast_back.dto.MiniaturaDTO;
 import com.diecast.diecast_back.dto.MiniaturaFilterDTO;
 import com.diecast.diecast_back.exception.ResourceNotFoundException;
@@ -96,6 +97,14 @@ public class MiniaturaController {
 	        entity.setImagem(service.comprimirImagem(imagem));
 	    }
 	    entity = service.update(id, entity);
+	    return ResponseEntity.ok(entity);
+	}
+	
+	@PatchMapping("/{id}/baixa-estoque/{quantidade}")
+	public ResponseEntity<Miniatura> baixarEstoque(
+	        @PathVariable Long id,
+	        @PathVariable Long quantidade) {
+	    Miniatura entity = service.baixarEstoque(id, quantidade);
 	    return ResponseEntity.ok(entity);
 	}
 

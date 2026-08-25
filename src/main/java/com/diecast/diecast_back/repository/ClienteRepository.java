@@ -11,6 +11,8 @@ import com.diecast.diecast_back.model.Cliente;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 	boolean existsByTelefone(String telefone);
+	
+	boolean existsByTelefoneAndIdNot(String telefone, Long id);
 
 	@Query("""
 			SELECT c FROM Cliente c
